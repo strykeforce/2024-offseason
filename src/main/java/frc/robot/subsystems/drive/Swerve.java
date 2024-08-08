@@ -96,12 +96,17 @@ public class Swerve implements SwerveIO {
   public Rotation2d getGyroRotation2d() {
     return swerveDrive.getHeading();
   }
+
   public double getGyroRoll() {
     return ahrs.getRoll();
   }
 
   public void resetGyro() {
     swerveDrive.resetGyro();
+  }
+
+  public void drive(double Xmps, double Ymps, double OmegaRadps) {
+    swerveDrive.drive(Xmps, Ymps, OmegaRadps, false);
   }
 
   public SwerveModulePosition[] getSwerveModulePositions() {

@@ -1,26 +1,21 @@
 package frc.robot.subsystems.drive;
 import java.util.Set;
 
-import org.strykeforce.swerve.SwerveDrive;
 import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
 import org.strykeforce.telemetry.measurable.Measure;
-import frc.robot.subsystems.drive.Swerve;
-import frc.robot.controllers.FlyskyJoystick;
 
 public class DriveSubsystem extends MeasurableSubsystem {
 
   private final SwerveIO io;
   private SwerveIOInputsAutoLogged inputs = new SwerveIOInputsAutoLogged();
-  private final Swerve swerve;
-  private final SwerveDrive swerveDrive;
-  private final FlyskyJoystick controllerFlyskyJoystick;
 
   public DriveSubsystem(SwerveIO io){
     this.io = io;
-    this.swerve = new Swerve();
-    this.swerveDrive = swerve.getSwerveDrive();
-    
+    org.littletonrobotics.junction.Logger.recordOutput("Test Measurement", true);
   }
+    public void drive(double Xmps, double Ymps, double OmegaRadps) {
+      io.drive(Xmps, Ymps, OmegaRadps);
+    }
 
 
 
@@ -28,7 +23,7 @@ public class DriveSubsystem extends MeasurableSubsystem {
   public Set<Measure> getMeasures() {
       // TODO Auto-generated method stub
       return Set.of(
-        new Measure("Gyro roll", () -> swerve.getGyroRoll())
+        new Measure("Gyro Yaw", () -> inputs.gyroRotation)
       );
   }
 

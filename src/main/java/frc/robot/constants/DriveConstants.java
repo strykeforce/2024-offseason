@@ -169,7 +169,7 @@ public final class DriveConstants {
   public static final double kIOmega = 0.0;
   public static final double kDOmega = 0.0; // 0.001
   //    public static final double kMaxVelOmega = kMaxOmega / 2.0;
-  public static final double kMaxAccelOmegaPath = 5.0; // 3.14
+  public static final double kMaxAccelOmega = 5.0; // 3.14
   public static final double kMaxAccelOmegaSpin = 8.0; // 3.14
 
   // Default safety path constants

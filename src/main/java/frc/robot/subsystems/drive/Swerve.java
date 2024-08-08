@@ -6,21 +6,30 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.kauailabs.navx.frc.AHRS.SerialDataType;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+// import edu.wpi.first.math.kinematics.ChassisSpeeds;
+// import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+// import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
 import org.strykeforce.gyro.SF_AHRS;
+import org.strykeforce.swerve.PoseEstimatorOdometryStrategy;
 import org.strykeforce.swerve.SwerveDrive;
+import org.strykeforce.swerve.SwerveModule;
 import org.strykeforce.swerve.V6TalonSwerveModule;
 import org.strykeforce.swerve.V6TalonSwerveModule.ClosedLoopUnits;
+import org.strykeforce.telemetry.TelemetryService;
 
 public class Swerve implements SwerveIO {
 
-  private SwerveDrive swerveDrive;
+  private final SwerveDrive swerveDrive;
   private TalonFXConfigurator configurator;
   private SF_AHRS ahrs;
+  private PoseEstimatorOdometryStrategy odometryStrategy;
 
   public Swerve() {
     var moduleBuilder =
@@ -62,5 +71,58 @@ public class Swerve implements SwerveIO {
     swerveDrive = new SwerveDrive(ahrs, swerveModules);
     swerveDrive.resetGyro();
     swerveDrive.setGyroOffset(Rotation2d.fromDegrees(0));
+
+    odometryStrategy =
+        new PoseEstimatorOdometryStrategy(
+            swerveDrive.getHeading(),
+            new Pose2d(),
+            swerveDrive.getKinematics(),
+            null,
+            null,
+            null,
+            getSwerveModulePositions());
+
+    swerveDrive.setOdometry(odometryStrategy);
+  }
+
+  public SwerveDrive getSwerveDrive() {
+    return swerveDrive;
+  }
+
+  public SwerveModule[] getSwerveModules() {
+    return swerveDrive.getSwerveModules();
+  }
+
+  public Rotation2d getGyroRotation2d() {
+    return swerveDrive.getHeading();
+  }
+  public double getGyroRoll() {
+    return ahrs.getRoll();
+  }
+
+  public void resetGyro() {
+    swerveDrive.resetGyro();
+  }
+
+  public SwerveModulePosition[] getSwerveModulePositions() {
+    SwerveModule[] swerveModules = getSwerveModules();
+    SwerveModulePosition[] temp = {null, null, null, null};
+    for (int i = 0; i < 4; ++i) {
+      temp[i] = swerveModules[i].getPosition();
+    }
+    return temp;
+  }
+
+  @Override
+  public void updateInputs(SwerveIOInputs inputs) {
+    inputs.odometryX = swerveDrive.getPoseMeters().getX();
+    inputs.odometryY = swerveDrive.getPoseMeters().getY();
+    inputs.gyroRotation = getGyroRotation2d().getDegrees();
+    inputs.odometryRotation2D = swerveDrive.getPoseMeters().getRotation().getDegrees();
+  }
+
+  @Override
+  public void registerWith(TelemetryService telemetryService) {
+    swerveDrive.registerWith(telemetryService);
   }
 }

@@ -23,7 +23,7 @@ public class DriveSubsystem extends MeasurableSubsystem {
   public Set<Measure> getMeasures() {
       // TODO Auto-generated method stub
       return Set.of(
-        new Measure("Gyro Yaw", () -> inputs.gyroRotation)
+        new Measure("Gyro Rotation", () -> inputs.gyroRotation)
       );
   }
 

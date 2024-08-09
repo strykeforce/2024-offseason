@@ -26,7 +26,6 @@ public class DriveSubsystem extends MeasurableSubsystem {
 
   @Override
   public Set<Measure> getMeasures() {
-    // TODO Auto-generated method stub
     return Set.of(new Measure("Gyro Rotation", () -> inputs.gyroRotation));
   }
 }

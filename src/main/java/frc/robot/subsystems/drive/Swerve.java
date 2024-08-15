@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DriveConstants;
+import frc.robot.constants.VisionConstants;
 import org.strykeforce.gyro.SF_AHRS;
 import org.strykeforce.swerve.PoseEstimatorOdometryStrategy;
 import org.strykeforce.swerve.SwerveDrive;
@@ -77,9 +78,9 @@ public class Swerve implements SwerveIO {
             swerveDrive.getHeading(),
             new Pose2d(),
             swerveDrive.getKinematics(),
-            null,
-            null,
-            null,
+            VisionConstants.kStateStdDevs,
+            VisionConstants.kLocalMeasurementStdDevs,
+            VisionConstants.kVisionMeasurementStdDevs,
             getSwerveModulePositions());
 
     swerveDrive.setOdometry(odometryStrategy);

@@ -7,8 +7,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drive.driveTeleop;
+import frc.robot.commands.drive.resetGyro;
 import frc.robot.controllers.FlyskyJoystick;
+import frc.robot.controllers.FlyskyJoystick.Button;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.Swerve;
 
@@ -33,6 +36,7 @@ public class RobotContainer {
             () -> flyskyJoystick.getStr(),
             () -> flyskyJoystick.getYaw(),
             driveSubsystem));
+    new JoystickButton(driveJoystick, Button.M_SWC.id).onTrue(new resetGyro(driveSubsystem));
   }
 
   public Command getAutonomousCommand() {

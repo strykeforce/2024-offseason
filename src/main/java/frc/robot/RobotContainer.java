@@ -15,7 +15,6 @@ import frc.robot.subsystems.drive.Swerve;
 public class RobotContainer {
 
   private final DriveSubsystem driveSubsystem;
-
   private final Joystick driveJoystick = new Joystick(0);
   private final FlyskyJoystick flyskyJoystick = new FlyskyJoystick(driveJoystick);
 

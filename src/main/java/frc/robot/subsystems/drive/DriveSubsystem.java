@@ -19,6 +19,10 @@ public class DriveSubsystem extends MeasurableSubsystem {
     io.drive(Xmps, Ymps, OmegaRadps);
   }
 
+  public void resetGyro() {
+    io.resetGyro();
+  }
+
   @Override
   public void registerWith(TelemetryService telemetryService) {
     io.registerWith(telemetryService);

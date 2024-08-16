@@ -18,4 +18,6 @@ public interface SwerveIO {
   public default void registerWith(TelemetryService telemetryService) {}
 
   public default void drive(double Xmps, double Ymps, double OmegaRadps) {}
+
+  public default void resetGyro() {}
 }

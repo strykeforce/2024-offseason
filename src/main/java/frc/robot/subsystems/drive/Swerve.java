@@ -110,6 +110,10 @@ public class Swerve implements SwerveIO {
     swerveDrive.drive(Xmps, Ymps, OmegaRadps, false);
   }
 
+  public void move(double Xmps, double Ymps, double OmegaRadps) {
+    swerveDrive.move(Xmps, Ymps, OmegaRadps, false);
+  }
+
   public SwerveModulePosition[] getSwerveModulePositions() {
     SwerveModule[] swerveModules = getSwerveModules();
     SwerveModulePosition[] temp = {null, null, null, null};

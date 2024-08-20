@@ -98,6 +98,10 @@ public class DriveSubsystem extends MeasurableSubsystem {
     io.resetGyro();
   }
 
+  public void rotateRobot() {
+    io.move(0,0, 0.33);
+  }
+
   @Override
   public void registerWith(TelemetryService telemetryService) {
     io.registerWith(telemetryService);

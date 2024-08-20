@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drive.driveTeleop;
 import frc.robot.commands.drive.resetGyro;
+import frc.robot.commands.drive.rotatingRobot;
 import frc.robot.controllers.FlyskyJoystick;
 import frc.robot.controllers.FlyskyJoystick.Button;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -37,6 +38,7 @@ public class RobotContainer {
             () -> flyskyJoystick.getYaw(),
             driveSubsystem));
     new JoystickButton(driveJoystick, Button.M_SWC.id).onTrue(new resetGyro(driveSubsystem));
+    new JoystickButton(driveJoystick, Button.SWA.id),onTrue(new rotatingRobot(driveSubsystem));
   }
 
   public Command getAutonomousCommand() {

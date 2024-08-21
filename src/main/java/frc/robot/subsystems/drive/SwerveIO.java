@@ -24,5 +24,4 @@ public interface SwerveIO {
   public default void move(double Xmps, double Ymps, double OmegaRadps) {}
 
   public default void resetGyro() {}
-  
 }

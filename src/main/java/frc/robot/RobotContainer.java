@@ -38,7 +38,7 @@ public class RobotContainer {
             () -> flyskyJoystick.getYaw(),
             driveSubsystem));
     new JoystickButton(driveJoystick, Button.M_SWC.id).onTrue(new resetGyro(driveSubsystem));
-    new JoystickButton(driveJoystick, Button.SWA.id).onTrue(new rotatingRobot(driveSubsystem));
+    new JoystickButton(driveJoystick, Button.SWD.id).onTrue(new rotatingRobot(driveSubsystem));
   }
 
   public Command getAutonomousCommand() {

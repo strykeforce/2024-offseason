@@ -99,7 +99,7 @@ public class DriveSubsystem extends MeasurableSubsystem {
   }
 
   public void rotateRobot() {
-    io.move(0,0, 0.33);
+    io.move(0, 0, 0.33);
   }
 
   @Override

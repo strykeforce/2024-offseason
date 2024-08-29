@@ -3,12 +3,23 @@ package frc.robot.subsystems.drive;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.Trajectory.State;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.constants.DriveConstants;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Set;
+import net.consensys.cava.toml.Toml;
+import net.consensys.cava.toml.TomlArray;
+import net.consensys.cava.toml.TomlParseResult;
+import net.consensys.cava.toml.TomlTable;
 import org.strykeforce.telemetry.TelemetryService;
 import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
 import org.strykeforce.telemetry.measurable.Measure;
@@ -26,6 +37,7 @@ public class DriveSubsystem extends MeasurableSubsystem {
   private State holoInput = new State();
   private Rotation2d holoAngle = new Rotation2d();
   private ChassisSpeeds holoOutput = new ChassisSpeeds();
+  private Pose2d pose;
 
   public DriveSubsystem(SwerveIO io) {
     this.io = io;
@@ -94,12 +106,80 @@ public class DriveSubsystem extends MeasurableSubsystem {
     io.move(holoOutput.vxMetersPerSecond, driveY, holoOutput.omegaRadiansPerSecond);
   }
 
+  public PathData generateTrajectory(String trajectoryName) {
+    try {
+      TomlParseResult parseResult =
+          Toml.parse(Paths.get("/home/lvuser/deploy/paths/" + trajectoryName + ".toml"));
+
+      Pose2d startPose = parseEndPoint(parseResult, "start_point");
+      Pose2d endPose = parseEndPoint(parseResult, "end_point");
+
+      TomlArray internalPointsToml = parseResult.getArray("internal_points");
+      ArrayList<Translation2d> path = new ArrayList<>();
+      for (int i = 0; i < internalPointsToml.size(); i++) {
+
+        TomlTable waypointToml = internalPointsToml.getTable(i);
+        Translation2d waypoint =
+            new Translation2d(waypointToml.getDouble("x"), waypointToml.getDouble("y"));
+        path.add(waypoint);
+      }
+      TrajectoryConfig trajectoryConfig =
+          new TrajectoryConfig(
+              parseResult.getDouble("max_velocity"), parseResult.getDouble("max_acceleration"));
+      trajectoryConfig.setStartVelocity(parseResult.getDouble("start_velocity"));
+      trajectoryConfig.setEndVelocity(parseResult.getDouble("end_velocity"));
+      double yawDegrees = parseResult.getDouble("target_yaw");
+      Rotation2d target_Yaw = Rotation2d.fromDegrees(yawDegrees);
+
+      Trajectory trajectoryGenerated =
+          TrajectoryGenerator.generateTrajectory(startPose, path, endPose, trajectoryConfig);
+      return new PathData(target_Yaw, trajectoryGenerated);
+
+    } catch (Exception error) {
+      Trajectory trajectoryGenerated =
+          TrajectoryGenerator.generateTrajectory(
+              DriveConstants.startPose2d,
+              DriveConstants.getDefaultInternalWaypoints(),
+              DriveConstants.endPose2d,
+              DriveConstants.getDefaultTrajectoryConfig());
+
+      return new PathData(inputs.gyroRotation2d, trajectoryGenerated);
+    }
+  }
+
   public void resetGyro() {
     io.resetGyro();
   }
 
   public void rotateRobot() {
-    io.move(0, 0, 0.33);
+    io.move(0, 0, 0.5);
+  }
+
+  private Pose2d parseEndPoint(TomlParseResult parseResult, String poseName) {
+    TomlTable table = parseResult.getTable(poseName);
+    return new Pose2d();
+  }
+
+  public void activateHaloRing() {
+    holonomicController.setEnabled(true);
+  }
+
+  public void deactivateHaloRing() {
+    holonomicController.setEnabled(false);
+  }
+
+  public void resetHaloRing() {
+    xController.reset();
+    yController.reset();
+    omegaController.reset(inputs.gyroRotation2d.getRadians());
+  }
+
+  public void resetOdometry(Pose2d pose) {
+    io.resetOdometry(pose);
+  }
+
+  public Rotation2d obtainGyroRotation() {
+    return inputs.gyroRotation2d;
   }
 
   @Override

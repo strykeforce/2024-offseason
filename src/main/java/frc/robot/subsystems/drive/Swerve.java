@@ -128,6 +128,7 @@ public class Swerve implements SwerveIO {
     inputs.odometryX = swerveDrive.getPoseMeters().getX();
     inputs.odometryY = swerveDrive.getPoseMeters().getY();
     inputs.gyroRotation = getGyroRotation2d().getDegrees();
+    inputs.gyroRotation2d = swerveDrive.getHeading();
     inputs.odometryRotation2D = swerveDrive.getPoseMeters().getRotation().getDegrees();
   }
 

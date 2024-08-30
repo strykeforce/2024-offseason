@@ -38,6 +38,8 @@ public class DriveSubsystem extends MeasurableSubsystem {
   private Rotation2d holoAngle = new Rotation2d();
   private ChassisSpeeds holoOutput = new ChassisSpeeds();
   private Pose2d pose;
+  private Pose2d savedPose = new Pose2d();
+  private Pose2d currentPose;
 
   public DriveSubsystem(SwerveIO io) {
     this.io = io;
@@ -178,6 +180,10 @@ public class DriveSubsystem extends MeasurableSubsystem {
     io.resetOdometry(pose);
   }
 
+  public void halt() {
+    io.move(0, 0, 0);
+  }
+
   public Rotation2d obtainGyroRotation() {
     return inputs.gyroRotation2d;
   }
@@ -189,6 +195,15 @@ public class DriveSubsystem extends MeasurableSubsystem {
 
   @Override
   public Set<Measure> getMeasures() {
-    return Set.of(new Measure("Gyro Rotation", () -> inputs.gyroRotation));
+    return Set.of(
+        new Measure("Gyro Rotation", () -> inputs.gyroRotation),
+        new Measure("Odometry X", () -> inputs.odometryX),
+        new Measure("Odometry Y", () -> inputs.odometryY));
+  }
+
+  @Override
+  public void periodic() {
+    currentPose = new Pose2d(inputs.odometryX, inputs.odometryY, holoAngle);
+    org.littletonrobotics.junction.Logger.recordOutput("Velocity", (currentPose.minus(savedPose)));
   }
 }

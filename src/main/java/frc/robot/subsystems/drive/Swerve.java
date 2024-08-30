@@ -31,6 +31,8 @@ public class Swerve implements SwerveIO {
   private TalonFXConfigurator configurator;
   private SF_AHRS ahrs;
   private PoseEstimatorOdometryStrategy odometryStrategy;
+  private Pose2d savedPose;
+  private Pose2d currentPose;
 
   public Swerve() {
     var moduleBuilder =

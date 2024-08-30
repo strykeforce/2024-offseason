@@ -18,9 +18,7 @@ public interface SwerveIO {
     public Pose2d poseMeters = new Pose2d();
   }
 
-  public default void updateInputs(SwerveIOInputs inputs) {
-    // odometryCalculated = sqrt(odometryX
-  }
+  public default void updateInputs(SwerveIOInputs inputs) {}
 
   public default void registerWith(TelemetryService telemetryService) {}
 

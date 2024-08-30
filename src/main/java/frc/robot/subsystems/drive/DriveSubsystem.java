@@ -111,7 +111,7 @@ public class DriveSubsystem extends MeasurableSubsystem {
   public PathData generateTrajectory(String trajectoryName) {
     try {
       TomlParseResult parseResult =
-          Toml.parse(Paths.get("/home/lvuser/deploy/paths/" + trajectoryName + ".toml"));
+          Toml.parse(Paths.get("/home/lvuser/deploy/paths/5MetersForward.toml"));
 
       Pose2d startPose = parseEndPoint(parseResult, "start_point");
       Pose2d endPose = parseEndPoint(parseResult, "end_point");

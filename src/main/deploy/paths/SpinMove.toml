@@ -1,13 +1,29 @@
-max_velocity = 2.0 #m/s
-max_acceleration = 2.5 #m/s
+max_velocity = 1.0 #m/s
+max_acceleration = 1.0 #m/s
 start_velocity = 0.0 #m/s
 end_velocity = 0.0 #m/s 
 is_reversed = false
 target_yaw = 0 #degrees
 
 [start_pose]
-    dataPoint = "AI1"
+    x = 0.738
+    y = 7.658
 [end_pose]
-    dataPoint = "AI1"
-    angle = 500
+    x = 2.053
+    y = 4.075
 
+[[internal_points]]
+    x = 4.675
+    y = 6.764
+[[internal_points]]
+    x = 4.251
+    y = 6.466
+[[internal_points]]
+    x = 2.103
+    y = 6.498
+[[internal_points]]
+    x = 1.805
+    y = 6.027
+[[internal_points]]
+    x = 2.024
+    y = 5.353

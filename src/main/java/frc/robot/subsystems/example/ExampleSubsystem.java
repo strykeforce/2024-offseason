@@ -14,7 +14,6 @@ public class ExampleSubsystem extends MeasurableSubsystem implements ClosedLoopP
   private final ExampleIOInputsAutoLogged inputs = new ExampleIOInputsAutoLogged();
   private double setpoint = 0.0;
   private ExampleState curState = ExampleState.INIT;
-
   // Constructor
   public ExampleSubsystem(ExampleIO io) {
     this.io = io;

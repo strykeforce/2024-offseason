@@ -1,31 +1,35 @@
-//if you see this, tell me what else i need to add in the notes file
-
-
 package frc.robot.subsystems.Magazine;
 
 import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
 
 import frc.robot.standards.ClosedLoopPosSubsystem;
-import frc.robot.subsystems.Magazine.MagazineIOFX;
 
-public class MagazineSubsystem extends MeasurableSubsystem implements ClosedLoopPosSubsystem {
-  // Private Variables
-  private final MagazineIO io;
-  private final ExampleIOInputsAutoLogged inputs = new ExampleIOInputsAutoLogged();
-  private double setpoint = 0.0;
+public class MagazineSubsystem implements ClosedLoopPosSubsystem {
+    // Private Variables
+    private final MagazineIO io;
+    private float speed = 1.0f;
 
-  // Constructor
-  public MagazineSubsystem(MagazineIO io) {
-    this.io = io;
-    zero();
-  }
-  //change if needed
-    float speed = 1;
-
-    public void intake(){
-        new MagazineIOFX().spin(speed);
+    // Constructor
+    public MagazineSubsystem(MagazineIO io) {
+        this.io = io;
+        zero();
     }
-    public void stopIntake(){
-        new MagazineIOFX().stopSpinning();
+
+    // Method to intake items
+    public void intake() {
+        io.spin(speed);
     }
+
+    // Method to stop intake
+    public void stopIntake() {
+        io.stopSpinning();
+    }
+
+    // Method to reset the position (assuming this is required by the interface)
+    @Override
+    public void zero() {
+        // Implement zeroing logic if needed
+    }
+
+    // Implement any additional methods required by ClosedLoopPosSubsystem here
 }

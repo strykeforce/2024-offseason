@@ -15,7 +15,6 @@ public class ExiterIOFX implements ExiterIO {
   private Logger logger;
   private TalonFX talonFxLeft;
   private TalonFX talonFxRight;
-
   private double setpointLeft; 
   private double setpointRight;
 

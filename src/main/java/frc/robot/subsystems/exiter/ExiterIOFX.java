@@ -1,9 +1,8 @@
 package frc.robot.subsystems.exiter;
 
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
-import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import frc.robot.constants.ExiterConstants;
 import org.slf4j.Logger;
@@ -16,7 +15,7 @@ public class ExiterIOFX implements ExiterIO {
   private TalonFX talonFxLeft;
   private TalonFX talonFxRight;
 
-  private double setpointLeft; 
+  private double setpointLeft;
   private double setpointRight;
 
   // FX Access objects
@@ -24,29 +23,29 @@ public class ExiterIOFX implements ExiterIO {
   TalonFXConfigurator configuratorRight;
   StatusSignal<Double> currLeftVelocity;
   StatusSignal<Double> currRightVelocity;
-  private VelocityVoltage velocityRequestLeft = new VelocityVoltage().withEnableFOC(false).withSlot(0);
-  private VelocityVoltage velocityRequestRight = new VelocityVoltage().withEnableFOC(false).withSlot(0);
-
+  private MotionMagicVelocityVoltage velocityRequestLeft =
+      new MotionMagicVelocityVoltage(0).withEnableFOC(false).withSlot(0);
+  private MotionMagicVelocityVoltage velocityRequestRight =
+      new MotionMagicVelocityVoltage(0).withEnableFOC(false).withSlot(0);
 
   public ExiterIOFX() {
     logger = LoggerFactory.getLogger(this.getClass());
     talonFxLeft = new TalonFX(ExiterConstants.kFxIDLeft);
     talonFxRight = new TalonFX(ExiterConstants.kFxIDRight);
 
-
     // Config controller
-    configuratorLeft = talonFxLeft.getConfigurator(); 
+    configuratorLeft = talonFxLeft.getConfigurator();
     configuratorRight = talonFxRight.getConfigurator();
-    configuratorLeft.apply(ExiterConstants.getFXConfig());
-    configuratorRight.apply(ExiterConstants.getFXConfig());
+    configuratorLeft.apply(ExiterConstants.getLeftFXConfig());
+    configuratorRight.apply(ExiterConstants.getRightFXConfig());
 
     // Attach status signals
-    double currLeftVelocity = talonFxLeft.getVelocity();
-    double currRightVelocity = talonFxRight.getVelocity();
+    currLeftVelocity = talonFxLeft.getVelocity();
+    currRightVelocity = talonFxRight.getVelocity();
   }
 
   @Override
-  public void updateInputs(ExiterIOInputs inputs, StatusSignal<Double> velocityLeft, StatusSignal<Double> velocityRight) { 
+  public void updateInputs(ExiterIOInputs inputs) {
     inputs.velocityLeft = currLeftVelocity.refresh().getValue();
     inputs.velocityRight = currRightVelocity.refresh().getValue();
   }
@@ -59,10 +58,9 @@ public class ExiterIOFX implements ExiterIO {
 
   @Override
   public void setSpeed(double leftSpeed, double rightSpeed) {
-    talonFxLeft.setControl(velocityRequestLeft.withVelocity(speed));
-    talonFxRight.setControl(velocityRequestRight.withVelocity(speed));
+    talonFxLeft.setControl(velocityRequestLeft.withVelocity(leftSpeed));
+    talonFxRight.setControl(velocityRequestRight.withVelocity(rightSpeed));
     setpointLeft = leftSpeed;
     setpointRight = rightSpeed;
   }
-
 }

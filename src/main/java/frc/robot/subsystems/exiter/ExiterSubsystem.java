@@ -6,6 +6,8 @@ import org.strykeforce.telemetry.TelemetryService;
 import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
 import org.strykeforce.telemetry.measurable.Measure;
 
+import frc.robot.subsystems.exiter.ExiterCommands.SameSpeed;
+
 public class ExiterSubsystem extends MeasurableSubsystem {
   // Private Variables
   private final ExiterIO io;
@@ -24,11 +26,13 @@ public class ExiterSubsystem extends MeasurableSubsystem {
   public void periodic() {
     // Read Inputs
     io.updateInputs(inputs);
+    org.littletonrobotics.junction.Logger.processInputs("ExiterInputs", inputs);
 
     // Log Outputs
     // Logger.recordOutput("Exiter/curState", curState.ordinal());
     Logger.recordOutput("Exiter/setpoint", setpointLeft);
     Logger.recordOutput("Exiter/setpoint", setpointRight);
+    Logger.recordOutput("Exiter/atSpeed", atSpeed());
   }
 
   // Grapher

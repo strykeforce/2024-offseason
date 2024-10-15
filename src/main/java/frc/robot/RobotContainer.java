@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import org.strykeforce.telemetry.TelemetryController;
+import org.strykeforce.telemetry.TelemetryService;
+
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -14,9 +17,12 @@ import frc.robot.subsystems.exiter.ExiterCommands.SameSpeed;
 public class RobotContainer {
   private final ExiterSubsystem exiter;
   private XboxController xboxController;
+  private final TelemetryService telemetryService = new TelemetryService(TelemetryController::new);
 
   public RobotContainer() {
     exiter = new ExiterSubsystem(new ExiterIOFX());
+    exiter.registerWith(telemetryService);
+    telemetryService.start();
     xboxController = new XboxController(1);
     configureBindings();
   }

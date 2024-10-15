@@ -32,7 +32,7 @@ public class ExiterConstants {
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(10)
             .withStatorCurrentLimitEnable(false)
-            .withStatorCurrentLimit(40)
+            .withSupplyCurrentLimit(40)
             .withSupplyCurrentThreshold(40)
             .withSupplyCurrentLimitEnable(true)
             .withSupplyTimeThreshold(0.5);
@@ -52,9 +52,9 @@ public class ExiterConstants {
 
     SoftwareLimitSwitchConfigs swLimit =
         new SoftwareLimitSwitchConfigs()
-            .withForwardSoftLimitEnable(true)
+            .withForwardSoftLimitEnable(false)
             .withForwardSoftLimitThreshold(kMaxFwd)
-            .withReverseSoftLimitEnable(true)
+            .withReverseSoftLimitEnable(false)
             .withReverseSoftLimitThreshold(kMaxRev);
     fxConfig.SoftwareLimitSwitch = swLimit;
 
@@ -96,7 +96,7 @@ public class ExiterConstants {
         new CurrentLimitsConfigs()
             .withStatorCurrentLimit(10)
             .withStatorCurrentLimitEnable(false)
-            .withStatorCurrentLimit(40)
+            .withSupplyCurrentLimit(40)
             .withSupplyCurrentThreshold(40)
             .withSupplyCurrentLimitEnable(true)
             .withSupplyTimeThreshold(0.5);
@@ -116,9 +116,9 @@ public class ExiterConstants {
 
     SoftwareLimitSwitchConfigs swLimit =
         new SoftwareLimitSwitchConfigs()
-            .withForwardSoftLimitEnable(true)
+            .withForwardSoftLimitEnable(false)
             .withForwardSoftLimitThreshold(kMaxFwd)
-            .withReverseSoftLimitEnable(true)
+            .withReverseSoftLimitEnable(false)
             .withReverseSoftLimitThreshold(kMaxRev);
     fxConfig.SoftwareLimitSwitch = swLimit;
 

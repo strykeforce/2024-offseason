@@ -5,6 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import org.strykeforce.telemetry.TelemetryController;
+import org.strykeforce.telemetry.TelemetryService;
+
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -15,6 +19,9 @@ import frc.robot.controllers.FlyskyJoystick;
 import frc.robot.controllers.FlyskyJoystick.Button;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.Swerve;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.exiter.*;
+import frc.robot.subsystems.exiter.ExiterCommands.SameSpeed;
 
 public class RobotContainer {
 
@@ -24,9 +31,17 @@ public class RobotContainer {
 
   private Swerve swerve;
 
+  private final ExiterSubsystem exiter;
+  private XboxController xboxController;
+  private final TelemetryService telemetryService = new TelemetryService(TelemetryController::new);
+
   public RobotContainer() {
     swerve = new Swerve();
     driveSubsystem = new DriveSubsystem(swerve);
+    exiter = new ExiterSubsystem(new ExiterIOFX());
+    exiter.registerWith(telemetryService);
+    telemetryService.start();
+    xboxController = new XboxController(1);
     configureDriverBindings();
   }
 

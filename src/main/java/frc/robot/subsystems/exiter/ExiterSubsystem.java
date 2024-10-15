@@ -6,6 +6,7 @@ import org.strykeforce.telemetry.TelemetryService;
 import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
 import org.strykeforce.telemetry.measurable.Measure;
 
+import frc.robot.constants.ExiterConstants;
 import frc.robot.subsystems.exiter.ExiterCommands.SameSpeed;
 
 public class ExiterSubsystem extends MeasurableSubsystem {
@@ -30,8 +31,8 @@ public class ExiterSubsystem extends MeasurableSubsystem {
 
     // Log Outputs
     // Logger.recordOutput("Exiter/curState", curState.ordinal());
-    Logger.recordOutput("Exiter/setpoint", setpointLeft);
-    Logger.recordOutput("Exiter/setpoint", setpointRight);
+    Logger.recordOutput("Exiter/setpointLeft", setpointLeft);
+    Logger.recordOutput("Exiter/setpointRight", setpointRight);
     Logger.recordOutput("Exiter/atSpeed", atSpeed());
   }
 
@@ -62,7 +63,7 @@ public class ExiterSubsystem extends MeasurableSubsystem {
   }
 
   public boolean atSpeed() {
-    return Math.abs(setpointLeft - inputs.velocityLeft) <= 0.5
-        && Math.abs(setpointRight - inputs.velocityRight) <= 0.5;
+    return Math.abs(setpointLeft - inputs.velocityLeft) <= ExiterConstants.kCloseEnough
+        && Math.abs(setpointRight - inputs.velocityRight) <= ExiterConstants.kCloseEnough;
   }
 }

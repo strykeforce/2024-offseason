@@ -19,7 +19,7 @@ public class ExiterConstants {
   public static int kFxIDLeft = 40;
   public static int kFxIDRight = 41;
 
-  public static final double kCloseEnough = 100;
+  public static final double kCloseEnough = 2;
   public static final double kMaxFwd = 100;
   public static final double kMaxRev = -100;
   public static final double kZeroTicks = 1530;

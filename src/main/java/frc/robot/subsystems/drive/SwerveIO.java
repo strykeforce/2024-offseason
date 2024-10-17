@@ -29,4 +29,6 @@ public interface SwerveIO {
   public default void resetGyro() {}
 
   public default void resetOdometry(Pose2d pose2d) {}
+
+  public default void updateSwerve() {}
 }

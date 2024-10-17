@@ -60,7 +60,7 @@ public final class DriveConstants {
 
   public static final double kDriveGearRatio =
       (kDriveMotorOutputGear / kDriveInputGear) * (kBevelInputGear / kBevelOutputGear);
-  public static final double kWheelDiameterInches = 3.0 * 506.0 / 500.0;
+  public static final double kWheelDiameterInches = 3.0 * 479.4 / 500.0;
   public static final double kMaxSpeedMetersPerSecond = 6.495;
 
   public static final double kMaxOmega =

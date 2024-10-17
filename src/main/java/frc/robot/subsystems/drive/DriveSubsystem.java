@@ -1,3 +1,5 @@
+// Protected from the evil clutchs of computer gnomes by Huck
+
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
@@ -20,6 +22,7 @@ import net.consensys.cava.toml.Toml;
 import net.consensys.cava.toml.TomlArray;
 import net.consensys.cava.toml.TomlParseResult;
 import net.consensys.cava.toml.TomlTable;
+import org.littletonrobotics.junction.Logger;
 import org.strykeforce.telemetry.TelemetryService;
 import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
 import org.strykeforce.telemetry.measurable.Measure;
@@ -111,13 +114,14 @@ public class DriveSubsystem extends MeasurableSubsystem {
   public PathData generateTrajectory(String trajectoryName) {
     try {
       TomlParseResult parseResult =
-          Toml.parse(Paths.get("/home/lvuser/deploy/paths/5MetersForward.toml"));
+          Toml.parse(Paths.get("/home/lvuser/deploy/paths/" + trajectoryName + ".toml"));
 
-      Pose2d startPose = parseEndPoint(parseResult, "start_point");
-      Pose2d endPose = parseEndPoint(parseResult, "end_point");
+      Pose2d startPose = parseEndPoint(parseResult, "start_pose");
+      Pose2d endPose = parseEndPoint(parseResult, "end_pose");
 
       TomlArray internalPointsToml = parseResult.getArray("internal_points");
       ArrayList<Translation2d> path = new ArrayList<>();
+  
       for (int i = 0; i < internalPointsToml.size(); i++) {
 
         TomlTable waypointToml = internalPointsToml.getTable(i);
@@ -129,7 +133,9 @@ public class DriveSubsystem extends MeasurableSubsystem {
           new TrajectoryConfig(
               parseResult.getDouble("max_velocity"), parseResult.getDouble("max_acceleration"));
       trajectoryConfig.setStartVelocity(parseResult.getDouble("start_velocity"));
+      System.out.println(parseResult.getDouble("start_velocity"));
       trajectoryConfig.setEndVelocity(parseResult.getDouble("end_velocity"));
+      System.out.println(parseResult.getDouble("end_velocity"));
       double yawDegrees = parseResult.getDouble("target_yaw");
       Rotation2d target_Yaw = Rotation2d.fromDegrees(yawDegrees);
 
@@ -138,6 +144,7 @@ public class DriveSubsystem extends MeasurableSubsystem {
       return new PathData(target_Yaw, trajectoryGenerated);
 
     } catch (Exception error) {
+      System.out.println(error.toString());
       Trajectory trajectoryGenerated =
           TrajectoryGenerator.generateTrajectory(
               DriveConstants.startPose2d,
@@ -159,7 +166,12 @@ public class DriveSubsystem extends MeasurableSubsystem {
 
   private Pose2d parseEndPoint(TomlParseResult parseResult, String poseName) {
     TomlTable table = parseResult.getTable(poseName);
-    return new Pose2d();
+    System.out.println(table.getDouble("x"));
+    System.out.println(table.getDouble("y"));
+    return new Pose2d(
+        table.getDouble("x"),
+        table.getDouble("y"),
+        Rotation2d.fromDegrees(table.getDouble("angle")));
   }
 
   public void activateHaloRing() {
@@ -191,6 +203,7 @@ public class DriveSubsystem extends MeasurableSubsystem {
   @Override
   public void registerWith(TelemetryService telemetryService) {
     io.registerWith(telemetryService);
+    super.registerWith(telemetryService);
   }
 
   @Override
@@ -198,12 +211,21 @@ public class DriveSubsystem extends MeasurableSubsystem {
     return Set.of(
         new Measure("Gyro Rotation", () -> inputs.gyroRotation),
         new Measure("Odometry X", () -> inputs.odometryX),
-        new Measure("Odometry Y", () -> inputs.odometryY));
+        new Measure("Odometry Y", () -> inputs.odometryY),
+        new Measure("Trajectory Vel", () -> holoInput.velocityMetersPerSecond),
+        new Measure("Pose Meters X", () -> holoInput.poseMeters.getX()),
+        new Measure("Pose Meters Y", () -> holoInput.poseMeters.getY()),
+        new Measure("Traj Acceleration", () -> holoInput.accelerationMetersPerSecondSq),
+        new Measure("Holo Output X", () -> holoOutput.vxMetersPerSecond),
+        new Measure("Holo Output Y", () -> holoOutput.vyMetersPerSecond));
   }
 
   @Override
   public void periodic() {
     currentPose = new Pose2d(inputs.odometryX, inputs.odometryY, holoAngle);
     org.littletonrobotics.junction.Logger.recordOutput("Velocity", (currentPose.minus(savedPose)));
+    io.updateInputs(inputs);
+    Logger.processInputs("Drive", inputs);
+    io.updateSwerve();
   }
 }

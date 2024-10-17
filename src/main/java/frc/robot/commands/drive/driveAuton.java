@@ -18,7 +18,7 @@ public class driveAuton extends Command implements AutonCommandInterface {
   private final Timer timer = new Timer();
   private static final Logger logger = LoggerFactory.getLogger(driveAuton.class);
   private Rotation2d robotHeading;
-  private boolean lastPath;
+  private boolean lastPath = true;
   private String pathName;
   private boolean resetOdometry;
   private boolean trajectoryGenerated = false;
@@ -50,6 +50,7 @@ public class driveAuton extends Command implements AutonCommandInterface {
     driveSubsystem.resetHaloRing();
     timer.reset();
     Trajectory.State desiredState = trajectory.sample(timer.get());
+
     driveSubsystem.holonomicCalculator(desiredState, robotHeading);
   }
 
@@ -65,6 +66,7 @@ public class driveAuton extends Command implements AutonCommandInterface {
   }
 
   public void end(boolean interrupeted) {
+    System.out.println("Drive auton interupted");
     driveSubsystem.deactivateHaloRing();
     if (!lastPath) {
       driveSubsystem.holonomicCalculator(

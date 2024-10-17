@@ -39,7 +39,8 @@ public class Swerve implements SwerveIO {
         new V6TalonSwerveModule.V6Builder()
             .driveGearRatio(DriveConstants.kDriveGearRatio)
             .wheelDiameterInches(DriveConstants.kWheelDiameterInches)
-            .driveMaximumMetersPerSecond(DriveConstants.kMaxSpeedMetersPerSecond);
+            .driveMaximumMetersPerSecond(DriveConstants.kMaxSpeedMetersPerSecond)
+            .latencyCompensation(true);
 
     V6TalonSwerveModule[] swerveModules = new V6TalonSwerveModule[4];
     Translation2d[] wheelLocations = DriveConstants.getWheelLocationMeters();
@@ -92,6 +93,14 @@ public class Swerve implements SwerveIO {
     return swerveDrive;
   }
 
+  public void updateSwerve() {
+    swerveDrive.periodic();
+  }
+
+  public void resetOdometry(Pose2d pose2d) {
+    swerveDrive.resetOdometry(pose2d);
+  }
+
   public SwerveModule[] getSwerveModules() {
     return swerveDrive.getSwerveModules();
   }
@@ -109,7 +118,7 @@ public class Swerve implements SwerveIO {
   }
 
   public void drive(double Xmps, double Ymps, double OmegaRadps) {
-    swerveDrive.drive(Xmps, Ymps, OmegaRadps, false);
+    swerveDrive.drive(Xmps, Ymps, OmegaRadps, true);
   }
 
   public void move(double Xmps, double Ymps, double OmegaRadps) {
@@ -129,6 +138,7 @@ public class Swerve implements SwerveIO {
   public void updateInputs(SwerveIOInputs inputs) {
     inputs.odometryX = swerveDrive.getPoseMeters().getX();
     inputs.odometryY = swerveDrive.getPoseMeters().getY();
+    inputs.poseMeters = swerveDrive.getPoseMeters();
     inputs.gyroRotation = getGyroRotation2d().getDegrees();
     inputs.gyroRotation2d = swerveDrive.getHeading();
     inputs.odometryRotation2D = swerveDrive.getPoseMeters().getRotation().getDegrees();

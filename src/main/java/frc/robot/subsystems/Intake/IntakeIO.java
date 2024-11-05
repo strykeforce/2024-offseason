@@ -18,5 +18,4 @@ public interface IntakeIO {
   public default void registerWith(TelemetryService telemetryService) {}
 
   public default void SetSpeed(double speed) {}
-
 }

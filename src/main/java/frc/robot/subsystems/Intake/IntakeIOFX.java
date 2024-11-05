@@ -6,7 +6,6 @@ import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.ReverseLimitValue;
-
 import frc.robot.constants.IntakeConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,5 +57,4 @@ public class IntakeIOFX implements IntakeIO {
   public void SetSpeed(double speed) {
     talonFx.setControl(dutyCycleRequest.withOutput(speed));
   }
-
 }

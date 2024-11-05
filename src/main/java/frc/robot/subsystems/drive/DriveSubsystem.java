@@ -121,7 +121,7 @@ public class DriveSubsystem extends MeasurableSubsystem {
 
       TomlArray internalPointsToml = parseResult.getArray("internal_points");
       ArrayList<Translation2d> path = new ArrayList<>();
-  
+
       for (int i = 0; i < internalPointsToml.size(); i++) {
 
         TomlTable waypointToml = internalPointsToml.getTable(i);

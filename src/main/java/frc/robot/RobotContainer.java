@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -12,28 +13,50 @@ import frc.robot.commands.drive.driveAuton;
 import frc.robot.commands.drive.driveTeleop;
 import frc.robot.commands.drive.resetGyro;
 import frc.robot.commands.drive.rotatingRobot;
+import frc.robot.commands.intake.EndIntakeCommand;
+import frc.robot.commands.intake.StartIntakeCommand;
 import frc.robot.controllers.FlyskyJoystick;
 import frc.robot.controllers.FlyskyJoystick.Button;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIOFX;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.Swerve;
+import frc.robot.subsystems.exiter.*;
+import frc.robot.subsystems.exiter.ExiterCommands.SameSpeed;
 import org.strykeforce.telemetry.TelemetryController;
 import org.strykeforce.telemetry.TelemetryService;
 
 public class RobotContainer {
 
-  private final DriveSubsystem driveSubsystem;
   private final TelemetryService telemetryService = new TelemetryService(TelemetryController::new);
-  private final Joystick driveJoystick = new Joystick(0);
-  private final FlyskyJoystick flyskyJoystick = new FlyskyJoystick(driveJoystick);
 
   private Swerve swerve;
+  private final DriveSubsystem driveSubsystem;
+  private final ExiterSubsystem exiter;
+  private final Intake intake;
+
+  private XboxController xboxController;
+  private final Joystick driveJoystick = new Joystick(0);
+  private final FlyskyJoystick flyskyJoystick = new FlyskyJoystick(driveJoystick);
 
   public RobotContainer() {
     swerve = new Swerve();
     driveSubsystem = new DriveSubsystem(swerve);
+    exiter = new ExiterSubsystem(new ExiterIOFX());
+    intake = new Intake(new IntakeIOFX());
 
+    xboxController = new XboxController(1);
+    configureTelemetry();
     configureDriverBindings();
+    configureOperatorBindings();
     configureTelemtry();
+  }
+
+  private void configureTelemetry() {
+    exiter.registerWith(telemetryService);
+    intake.registerWith(telemetryService);
+    driveSubsystem.registerWith(telemetryService);
+    telemetryService.start();
   }
 
   private void configureDriverBindings() {
@@ -47,6 +70,16 @@ public class RobotContainer {
     new JoystickButton(driveJoystick, Button.M_SWE.id).onTrue(new rotatingRobot(driveSubsystem));
     new JoystickButton(driveJoystick, Button.SWD.id)
         .onTrue(new driveAuton(driveSubsystem, "auton", true));
+  }
+
+  private void configureOperatorBindings() {
+    new JoystickButton(xboxController, XboxController.Button.kLeftBumper.value)
+        .onTrue(new SameSpeed(exiter, 40));
+
+    new JoystickButton(xboxController, XboxController.Button.kA.value)
+        .onTrue(new StartIntakeCommand(intake));
+    new JoystickButton(xboxController, XboxController.Button.kB.value)
+        .onTrue(new EndIntakeCommand(intake));
   }
 
   public Command getAutonomousCommand() {

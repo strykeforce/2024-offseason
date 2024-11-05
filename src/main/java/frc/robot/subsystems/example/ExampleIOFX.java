@@ -29,7 +29,7 @@ public class ExampleIOFX implements ExampleIO {
 
   public ExampleIOFX() {
     logger = LoggerFactory.getLogger(this.getClass());
-    talonFx = new TalonFX(ExampleConstants.kExampleFxId);
+    // talonFx = new TalonFX(ExampleConstants.kExampleFxId);
     absSensorInitial =
         talonFx.getPosition().getValue(); // relative encoder starts up as absolute position offset
 

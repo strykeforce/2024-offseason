@@ -1,13 +1,11 @@
 package frc.robot.subsystems.exiter;
 
+import frc.robot.constants.ExiterConstants;
 import java.util.Set;
 import org.littletonrobotics.junction.Logger;
 import org.strykeforce.telemetry.TelemetryService;
 import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
 import org.strykeforce.telemetry.measurable.Measure;
-
-import frc.robot.constants.ExiterConstants;
-import frc.robot.subsystems.exiter.ExiterCommands.SameSpeed;
 
 public class ExiterSubsystem extends MeasurableSubsystem {
   // Private Variables

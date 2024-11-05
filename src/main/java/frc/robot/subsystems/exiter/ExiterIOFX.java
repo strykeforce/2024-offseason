@@ -48,7 +48,6 @@ public class ExiterIOFX implements ExiterIO {
   public void updateInputs(ExiterIOInputs inputs) {
     inputs.velocityLeft = currLeftVelocity.refresh().getValue();
     inputs.velocityRight = currRightVelocity.refresh().getValue();
-
   }
 
   @Override

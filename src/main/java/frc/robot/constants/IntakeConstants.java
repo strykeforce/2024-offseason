@@ -15,9 +15,11 @@ import com.ctre.phoenix6.signals.ReverseLimitSourceValue;
 import com.ctre.phoenix6.signals.ReverseLimitTypeValue;
 
 public class IntakeConstants {
-    public static int IntakeFxId = 20;
+  public static int IntakeFxId = 20;
+  public static final double kIntakingSpeed = -0.6;
+  public static final double kReversingSpeed = 0.25;
 
-    // Example Talon FX Config
+  // Example Talon FX Config
   public static TalonFXConfiguration getFXConfig() {
     TalonFXConfiguration fxConfig = new TalonFXConfiguration();
 

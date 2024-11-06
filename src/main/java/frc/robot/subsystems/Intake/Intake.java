@@ -1,25 +1,26 @@
 package frc.robot.subsystems.Intake;
 
+import frc.robot.constants.IntakeConstants;
+import frc.robot.standards.OpenLoopSubsystem;
 import java.util.Set;
-
 import org.littletonrobotics.junction.Logger;
 import org.strykeforce.telemetry.TelemetryService;
 import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
 import org.strykeforce.telemetry.measurable.Measure;
 
-
-import frc.robot.standards.OpenLoopSubsystem;
-
 public class Intake extends MeasurableSubsystem implements OpenLoopSubsystem {
 
-    private float totalBreaks;
-    private boolean fwdBeamOpen;
+  // Private Variables
+  private float totalBreaks = 0;
+  private final IntakeIO io;
+  private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-    private IntakeIOFX Motor;
-    private double speed;
+  public IntakeState curState = IntakeState.IDLE;
 
-    // Private Variables
-  private IntakeState curState = IntakeState.Running;
+  // Constructor
+  public Intake(IntakeIO io) {
+    this.io = io;
+  }
 
   // Getter/Setter Methods
   public IntakeState getState() {
@@ -29,42 +30,41 @@ public class Intake extends MeasurableSubsystem implements OpenLoopSubsystem {
   // Periodic Function
   @Override
   public void periodic() {
+    // Read Inputs
+    io.updateInputs(inputs);
+    Logger.processInputs("IntakeInputs", inputs);
 
     // State Machine
     switch (curState) {
       case Running:
-        Motor.SetSpeed(0);
-        //wait for break 3 times
-        if(fwdBeamOpen = true)
-        {
+        // wait for break 3 times
+        if (inputs.revBeamOpen == false) {
           totalBreaks += 1;
-        }else{
+        } else {
           totalBreaks = 0;
         }
 
-        if(totalBreaks >= 3)
-        {
+        if (totalBreaks >= inputs.requiredBreaks) {
           curState = IntakeState.PickingUp;
         }
         break;
       case PickingUp:
-        Motor.SetSpeed(speed);
         break;
       case NotePassed:
-        Motor.SetSpeed(-speed);
         break;
       default:
         break;
     }
 
     // Log Outputs
-    Logger.recordOutput("Example/curState", curState.ordinal());
+    Logger.recordOutput("Intake/curState", curState);
+    Logger.recordOutput("Intake/totalBreaks", totalBreaks);
   }
 
   // Grapher
   @Override
   public void registerWith(TelemetryService telemetryService) {
-
+    io.registerWith(telemetryService);
     super.registerWith(telemetryService);
   }
 
@@ -76,18 +76,18 @@ public class Intake extends MeasurableSubsystem implements OpenLoopSubsystem {
   // State Enum
   public enum IntakeState {
     IDLE,
-    NotePassed, 
-    Running, 
+    NotePassed,
+    Running,
     PickingUp
   }
-  
-    public void ReverseMotors()
-    {
-      curState = IntakeState.NotePassed;
-    }
 
-    public void Fired()
-    {
-      curState = IntakeState.Running;
-    }
+  public void ReverseMotors() {
+    curState = IntakeState.NotePassed;
+    io.SetSpeed(IntakeConstants.kReversingSpeed);
+  }
+
+  public void StartIntake() {
+    curState = IntakeState.Running;
+    io.SetSpeed(IntakeConstants.kIntakingSpeed);
+  }
 }

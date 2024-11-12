@@ -3,27 +3,23 @@ package frc.robot.subsystems.Magazine;
 import org.littletonrobotics.junction.AutoLog;
 import org.strykeforce.telemetry.TelemetryService;
 
-/**
- * Interface for controlling the Magazine subsystem.
- */
+/** Interface for controlling the Magazine subsystem. */
 public interface MagazineIO {
-      @AutoLog
+  @AutoLog
   public static class IOInputs {
     public boolean beambreak = false;
     public double velocity = 0.0;
   }
 
-  public default void updateInputs(IOInputs inputs) {}
+  public default void updateInputs() {}
 
-    boolean spin(double speed);
-    
-    void stopSpinning();
+  boolean spin(double speed);
 
-    double getSpeed();
+  void stopSpinning();
 
-    boolean atSpeed();
+  double atSpeed();
 
-    double isBeamBroken();
+  boolean isBeamBroken();
 
-    public default void registerWith(TelemetryService telemetryService) {}
+  public default void registerWith(TelemetryService telemetryService) {}
 }

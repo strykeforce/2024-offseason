@@ -1,35 +1,46 @@
 package frc.robot.subsystems.Magazine;
 
-import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
+import org.strykeforce.telemetry.TelemetryService;
 
-import frc.robot.standards.ClosedLoopPosSubsystem;
+public class MagazineSubsystem implements MagazineIO {
+  private final MagazineIOFX magazineIOFX;
 
-public class MagazineSubsystem implements ClosedLoopPosSubsystem {
-    // Private Variables
-    private final MagazineIO io;
-    private float speed = 1.0f;
+  public MagazineSubsystem() {
+    magazineIOFX = new MagazineIOFX();
+    setVelocity(0);
+  }
 
-    // Constructor
-    public MagazineSubsystem(MagazineIO io) {
-        this.io = io;
-        zero();
-    }
+  @Override
+  public boolean spin(double speed) {
+    return magazineIOFX.spin(speed);
+  }
 
-    // Method to intake items
-    public void intake() {
-        io.spin(speed);
-    }
+  @Override
+  public void stopSpinning() {
+    magazineIOFX.stopSpinning();
+  }
 
-    // Method to stop intake
-    public void stopIntake() {
-        io.stopSpinning();
-    }
+  @Override
+  public double atSpeed() {
+    return magazineIOFX.atSpeed();
+  }
 
-    // Method to reset the position (assuming this is required by the interface)
-    @Override
-    public void zero() {
-        // Implement zeroing logic if needed
-    }
+  public void setVelocity(double speed) {
+    magazineIOFX.spin(speed);
+  }
 
-    // Implement any additional methods required by ClosedLoopPosSubsystem here
+  @Override
+  public void updateInputs() {
+    magazineIOFX.updateInputs();
+  }
+
+  @Override
+  public boolean isBeamBroken() {
+    return magazineIOFX.isBeamBroken();
+  }
+
+  @Override
+  public void registerWith(TelemetryService telemetryService) {
+    magazineIOFX.registerWith(telemetryService);
+  }
 }

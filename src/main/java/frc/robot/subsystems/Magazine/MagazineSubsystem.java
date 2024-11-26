@@ -1,42 +1,45 @@
 package frc.robot.subsystems.Magazine;
 
-import org.strykeforce.telemetry.TelemetryService;
+import java.util.Set;
 
-public class MagazineSubsystem implements MagazineIO {
+import org.strykeforce.telemetry.TelemetryService;
+import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
+import org.strykeforce.telemetry.measurable.Measure;
+import frc.robot.standards.ClosedLoopPosSubsystem;
+import java.util.Set;
+import org.littletonrobotics.junction.Logger;
+import org.strykeforce.telemetry.TelemetryService;
+import org.strykeforce.telemetry.measurable.MeasurableSubsystem;
+import org.strykeforce.telemetry.measurable.Measure;
+
+public class MagazineSubsystem extends MeasurableSubsystem{
   private final MagazineIOFX magazineIOFX;
+  private final IOInputsAutoLogged inputs = new IOInputsAutoLogged();
+  private int testcount = 5;
 
   public MagazineSubsystem() {
     magazineIOFX = new MagazineIOFX();
-    setVelocity(0);
   }
 
-  @Override
-  public boolean spin(double speed) {
+  public boolean setSpin(double speed) {
     return magazineIOFX.spin(speed);
   }
 
-  @Override
-  public void stopSpinning() {
-    magazineIOFX.stopSpinning();
-  }
-
-  @Override
   public double atSpeed() {
     return magazineIOFX.atSpeed();
   }
 
-  public void setVelocity(double speed) {
-    magazineIOFX.spin(speed);
-  }
-
-  @Override
-  public void updateInputs() {
-    magazineIOFX.updateInputs();
-  }
-
-  @Override
   public boolean isBeamBroken() {
-    return magazineIOFX.isBeamBroken();
+        for(int i = 0; i < testcount; i++){
+        if (isBeamBroken()){
+            return true;
+        }
+    }
+    return false;
+  }
+
+    public void Periodic(){
+      magazineIOFX.updateInputs();
   }
 
   @Override

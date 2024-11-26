@@ -14,7 +14,7 @@ public class MagazineIOFX implements MagazineIO {
   private Logger logger;
   private final TalonFX talonFX;
   private IOInputs inputs;
-
+  
   // FX Access objects
   TalonFXConfigurator configurator;
   private MotionMagicDutyCycle positionRequest =
@@ -30,18 +30,19 @@ public class MagazineIOFX implements MagazineIO {
     talonFX = new TalonFX(magazineConstants.kFxId);
     reverseLimitSwitch = talonFX.getReverseLimit();
     currVelocity = talonFX.getVelocity();
+    reverseLimitSwitch = talonFX.getReverseLimit();
     // currBeambreak =
   }
 
   public double atSpeed() {
-    updateInputs();
     return inputs.velocity;
   }
 
   public void updateInputs() {
     inputs.velocity = currVelocity.refresh().getValue();
-    inputs.beambreak = currBeambreak.refresh().getValue();
+    inputs.beambreak = reverseLimitSwitch.refresh().getValue().value == 1;
   }
+
 
   public boolean spin(double inputSpeed) {
     // Optional: Safety check to limit speed range
@@ -50,10 +51,6 @@ public class MagazineIOFX implements MagazineIO {
     }
     talonFX.set(inputSpeed);
     return true;
-  }
-
-  public void stopSpinning() {
-    talonFX.stopMotor();
   }
 
   public boolean atSpeed(double targetSpeed) {

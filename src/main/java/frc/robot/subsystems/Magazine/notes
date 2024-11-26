@@ -1,8 +1,5 @@
-IO
-IOFX
-Subsystem
+set speed
+check for note
+check speed
 
-Make more like examples
-implement beambreak
-
-Fix implementing the speed check mismatch conversion
+./gradlew spotlessApply

@@ -15,8 +15,6 @@ public interface MagazineIO {
 
   boolean spin(double speed);
 
-  void stopSpinning();
-
   double atSpeed();
 
   boolean isBeamBroken();

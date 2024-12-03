@@ -8,6 +8,7 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.PathData;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class PathHandler extends SubsystemBase {
@@ -15,9 +16,9 @@ public class PathHandler extends SubsystemBase {
   private Timer timer = new Timer();
   private boolean handling = true;
   private PathStates curState = PathStates.DONE;
-  private boolean canShoot = false;
-  private boolean noteHeld = false;
-  private int numPieces = 3;
+  private boolean canShoot = true;
+  private boolean noteHeld = true;
+  private int numPieces;
   private Rotation2d robotHeading;
   private Trajectory curTrajectory;
   private ArrayList<Integer> noteOrder;
@@ -25,15 +26,36 @@ public class PathHandler extends SubsystemBase {
   private PathData nextPath;
   private Integer lastNote;
   private Integer nextNote;
-  private PathData[][] paths = new PathData[6][6];
+  private PathData[][] paths = new PathData[4][4];
+  private Integer targetNote = 1;
 
-  public PathHandler(DriveSubsystem driveSubsystem) {}
+  public PathHandler(DriveSubsystem driveSubsystem) {
+    this.driveSubsystem = driveSubsystem;
+    this.targetNote = targetNote;
+  }
+
+  public void setState(PathStates state) {
+    curState = state;
+  }
+
+  public void setOrder(List<Integer> list) {
+    noteOrder = new ArrayList<>(list);
+    lastNote = noteOrder.get(0);
+    nextNote = noteOrder.get(1);
+  }
+
+  public void setNumber(Integer numPieces) {
+    this.numPieces = numPieces;
+  }
+
+  public void setPathNames(String[][] pathNames) {
+    this.pathName = pathNames;
+  }
 
   public void makeTrajectory() {
     noteOrder.add(0);
 
     Set<Integer> singleNotes = new HashSet<Integer>(noteOrder);
-
     for (int i : singleNotes) {
       for (int j : singleNotes) {
         if (i != j) {
@@ -44,15 +66,23 @@ public class PathHandler extends SubsystemBase {
     noteOrder.remove(noteOrder.indexOf(0));
   }
 
-  public void setState(PathStates state) {
-    curState = state;
-  }
-
   public void startHandler() {
+    targetNote = 1;
     timer.reset();
     timer.restart();
     curState = PathStates.DRIVE_NOTE;
     handling = true;
+    if (noteHeld) {
+      startNewPath(paths[lastNote][0]);
+      curState = PathStates.DRIVE_SHOOT;
+    } else {
+      numPieces--;
+      lastNote = noteOrder.get(0);
+      nextNote = noteOrder.get(1);
+      noteOrder.remove(0);
+      startNewPath(paths[lastNote][nextNote]);
+    
+    }
   }
 
   public void stopHandlerl() {
@@ -63,13 +93,15 @@ public class PathHandler extends SubsystemBase {
   }
 
   public void startNewPath(PathData path) {
+
+    targetNote = nextNote;
     curTrajectory = path.trajectory;
     robotHeading = path.targetYaw;
     driveSubsystem.activateHaloRing();
     driveSubsystem.resetHaloRing();
     timer.reset();
+    timer.reset();
     timer.start();
-
     driveSubsystem.holonomicCalculator(curTrajectory.sample(timer.get()), robotHeading);
   }
 
@@ -78,20 +110,38 @@ public class PathHandler extends SubsystemBase {
     noteOrder.remove(0);
     nextNote = noteOrder.get(0);
   }
+  public PathStates getHandlerState() {
+    return curState;
+  }
 
   @Override
   public void periodic() {
+    org.littletonrobotics.junction.Logger.recordOutput("PathHandler", (curState));
+    org.littletonrobotics.junction.Logger.recordOutput("Target Note", targetNote);
     if (handling) {
       switch (curState) {
         case DRIVE_NOTE:
-          if (numPieces != 0) {
+          if (numPieces > 0) {
             driveSubsystem.holonomicCalculator(curTrajectory.sample(timer.get()), robotHeading);
             if (timer.hasElapsed(curTrajectory.getTotalTimeSeconds())) {
               if (noteHeld) {
+                lastNote = noteOrder.get(0);
+                targetNote = 0;
+                startNewPath(paths[lastNote][0]);
                 curState = PathStates.DRIVE_SHOOT;
+                break;
               } else {
                 numPieces--;
-                startNewPath(paths[lastNote][nextNote]);
+                if (noteOrder.size() > 1) {
+                  lastNote = noteOrder.get(0);
+                  nextNote = noteOrder.get(1);
+                  noteOrder.remove(0);
+                  startNewPath(paths[lastNote][nextNote]);
+                } else {
+                  lastNote = nextNote;
+                  startNewPath(paths[lastNote][nextNote]);
+                  noteOrder.remove(0);
+                }
               }
             }
           } else {
@@ -99,20 +149,32 @@ public class PathHandler extends SubsystemBase {
           }
           break;
         case DRIVE_SHOOT:
+
           if (canShoot) {
-            startNewPath(paths[lastNote][0]);
             driveSubsystem.holonomicCalculator(curTrajectory.sample(timer.get()), robotHeading);
             if (timer.hasElapsed(curTrajectory.getTotalTimeSeconds())) {
+
               curState = PathStates.SHOOT;
             }
           } else {
-            startNewPath(paths[lastNote][nextNote]);
-            curState = PathStates.DRIVE_NOTE;
+          //  startNewPath(paths[0][noteOrder.get(0)]);
+           // curState = PathStates.DRIVE_NOTE;
           }
           break;
         case SHOOT:
           // We can't do any of this yet so I'm not even going to start
           // putting logic in here because I have no idea what to do about it
+          if (numPieces > 1) {
+          lastNote = noteOrder.get(0);
+          nextNote = noteOrder.get(1);
+          noteOrder.remove(0);
+          numPieces--;
+          
+          startNewPath(paths[0][nextNote]);
+          curState = PathStates.DRIVE_NOTE;
+          } else {
+            curState = PathStates.DONE;
+          }
           break;
         case DONE:
           handling = false;
@@ -121,7 +183,7 @@ public class PathHandler extends SubsystemBase {
     }
   }
 
-  private enum PathStates {
+  public enum PathStates {
     DRIVE_NOTE,
     DRIVE_SHOOT,
     SHOOT,

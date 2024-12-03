@@ -121,7 +121,7 @@ public class DriveSubsystem extends MeasurableSubsystem {
 
       TomlArray internalPointsToml = parseResult.getArray("internal_points");
       ArrayList<Translation2d> path = new ArrayList<>();
-  
+
       for (int i = 0; i < internalPointsToml.size(); i++) {
 
         TomlTable waypointToml = internalPointsToml.getTable(i);
@@ -133,9 +133,7 @@ public class DriveSubsystem extends MeasurableSubsystem {
           new TrajectoryConfig(
               parseResult.getDouble("max_velocity"), parseResult.getDouble("max_acceleration"));
       trajectoryConfig.setStartVelocity(parseResult.getDouble("start_velocity"));
-      System.out.println(parseResult.getDouble("start_velocity"));
       trajectoryConfig.setEndVelocity(parseResult.getDouble("end_velocity"));
-      System.out.println(parseResult.getDouble("end_velocity"));
       double yawDegrees = parseResult.getDouble("target_yaw");
       Rotation2d target_Yaw = Rotation2d.fromDegrees(yawDegrees);
 
@@ -166,8 +164,6 @@ public class DriveSubsystem extends MeasurableSubsystem {
 
   private Pose2d parseEndPoint(TomlParseResult parseResult, String poseName) {
     TomlTable table = parseResult.getTable(poseName);
-    System.out.println(table.getDouble("x"));
-    System.out.println(table.getDouble("y"));
     return new Pose2d(
         table.getDouble("x"),
         table.getDouble("y"),

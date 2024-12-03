@@ -23,90 +23,19 @@ public final class AutonConstants {
 
   public static final double kForwardVel = 1.5;
 
-  public static final String[][] kNonAmpPathMatrix = {
+  public static final String[][] pathMatrix = {
     {
-      null,
-      "NonAmpShoot2_MiddleNote1",
-      "NonAmpShoot2_MiddleNote2",
-      "NonAmpShoot2_MiddleNote3",
-      "NonAmpShoot2_MiddleNote4_B",
-      "NonAmpShoot2_MiddleNote5"
+      null, "0-1", "0-2", "0-3",
     },
     {
-      "MiddleNote1_NonAmpShoot2",
-      null,
-      "MiddleNote1_MiddleNote2",
-      "MiddleNote1_MiddleNote3",
-      "MiddleNote1_MiddleNote4",
-      "MiddleNote1_MiddleNote5"
+      "1-0", null, "1-2", "1-3",
     },
     {
-      "MiddleNote2_NonAmpShoot2",
-      "MiddleNote2_MiddleNote1",
-      null,
-      "MiddleNote2_MiddleNote3",
-      "MiddleNote2_MiddleNote4",
-      "MiddleNote2_MiddleNote5"
+      "2-0", "2-1", null, "2-3",
     },
     {
-      "MiddleNote3_NonAmpShoot2",
-      "MiddleNote3_MiddleNote1",
-      "MiddleNote3_MiddleNote2",
-      null,
-      "MiddleNote3_MiddleNote4",
-      "MiddleNote3_MiddleNote5"
-    },
-    {
-      "MiddleNote4_NonAmpShoot2_B",
-      "MiddleNote4_MiddleNote1",
-      "MiddleNote4_MiddleNote2",
-      "MiddleNote4_MiddleNote3",
-      null,
-      "MiddleNote4_MiddleNote5"
-    },
-    {
-      "MiddleNote5_NonAmpShoot2",
-      "MiddleNote5_MiddleNote1",
-      "MiddleNote5_MiddleNote2",
-      "MiddleNote5_MiddleNote3",
-      "MiddleNote5_MiddleNote4",
-      null
+      "3-0", "3-1", "3-2", null,
     }
-  };
-
-  public static final String[][] kAmpPathMatrix = {
-    {
-      null, "AmpShoot2_MiddleNote1", "AmpShoot2_MiddleNote2", "AmpShoot2_MiddleNote3", null, null,
-    },
-    {
-      "MiddleNote1_AmpShoot2",
-      null,
-      "MiddleNote1_MiddleNote2",
-      "MiddleNote1_MiddleNote3",
-      "MiddleNote1_MiddleNote4",
-      null,
-      null
-    },
-    {
-      "MiddleNote2_AmpShoot2",
-      "MiddleNote2_MiddleNote1",
-      null,
-      "MiddleNote2_MiddleNote3",
-      null,
-      null,
-    },
-    {
-      "MiddleNote3_AmpShoot2",
-      "MiddleNote3_MiddleNote1",
-      "MiddleNote3_MiddleNote2",
-      null,
-      "MiddleNote3_MiddleNote4",
-      "MiddleNote3_MiddleNote5"
-    },
-    {
-      null, null, null, null, null,
-    },
-    {null, null, null, null, null, null}
   };
 
   public final class Setpoints {

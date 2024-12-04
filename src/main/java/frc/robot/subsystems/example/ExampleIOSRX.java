@@ -14,11 +14,11 @@ public class ExampleIOSRX implements ExampleIO {
 
   public ExampleIOSRX() {
     logger = LoggerFactory.getLogger(this.getClass());
-    talonSRX = new TalonSRX(ExampleConstants.kExampleSrxId);
+    // talonSRX = new TalonSRX(ExampleConstants.kExampleSrxId);
 
     // Configure
     talonSRX.configFactoryDefault();
-    talonSRX.configAllSettings(ExampleConstants.getSRXConfig());
+    // talonSRX.configAllSettings(ExampleConstants.getSRXConfig());
     talonSRX.setNeutralMode(NeutralMode.Coast);
   }
 

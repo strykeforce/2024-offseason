@@ -26,7 +26,7 @@
 | coder/sw  | vrm      | top        | -   | 21       |           |        |         |
 | radio     | vrm      | bottom     | -   | 22       |           |        |         |
 
-* intake beam break: to wheel 1 azimuth fwd lim
+* intake beam break: to fwd limit
 * magazine y-axis beam break: to magazine rev lim
 
 ## Roborio

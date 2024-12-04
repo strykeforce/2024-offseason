@@ -10,14 +10,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.Intake.IntakeState;
 
 public class PathHandler extends SubsystemBase {
   private DriveSubsystem driveSubsystem;
   private Timer timer = new Timer();
+  private Intake intake;
   private boolean handling = true;
   private PathStates curState = PathStates.DONE;
   private boolean canShoot = true;
-  private boolean noteHeld = true;
   private int numPieces;
   private Rotation2d robotHeading;
   private Trajectory curTrajectory;
@@ -29,9 +31,10 @@ public class PathHandler extends SubsystemBase {
   private PathData[][] paths = new PathData[4][4];
   private Integer targetNote = 1;
 
-  public PathHandler(DriveSubsystem driveSubsystem) {
+  public PathHandler(DriveSubsystem driveSubsystem, Intake intake) {
     this.driveSubsystem = driveSubsystem;
     this.targetNote = targetNote;
+    this.intake = intake;
   }
 
   public void setState(PathStates state) {
@@ -72,16 +75,16 @@ public class PathHandler extends SubsystemBase {
     timer.restart();
     curState = PathStates.DRIVE_NOTE;
     handling = true;
-    if (noteHeld) {
+    if (intake.getState() != IntakeState.Running) {
       startNewPath(paths[lastNote][0]);
       curState = PathStates.DRIVE_SHOOT;
     } else {
       numPieces--;
+      intake.StartIntake();
       lastNote = noteOrder.get(0);
       nextNote = noteOrder.get(1);
       noteOrder.remove(0);
       startNewPath(paths[lastNote][nextNote]);
-    
     }
   }
 
@@ -93,7 +96,7 @@ public class PathHandler extends SubsystemBase {
   }
 
   public void startNewPath(PathData path) {
-
+    intake.StartIntake();
     targetNote = nextNote;
     curTrajectory = path.trajectory;
     robotHeading = path.targetYaw;
@@ -110,6 +113,7 @@ public class PathHandler extends SubsystemBase {
     noteOrder.remove(0);
     nextNote = noteOrder.get(0);
   }
+
   public PathStates getHandlerState() {
     return curState;
   }
@@ -124,7 +128,7 @@ public class PathHandler extends SubsystemBase {
           if (numPieces > 0) {
             driveSubsystem.holonomicCalculator(curTrajectory.sample(timer.get()), robotHeading);
             if (timer.hasElapsed(curTrajectory.getTotalTimeSeconds())) {
-              if (noteHeld) {
+              if (intake.getState() != IntakeState.Running) {
                 lastNote = noteOrder.get(0);
                 targetNote = 0;
                 startNewPath(paths[lastNote][0]);
@@ -149,7 +153,6 @@ public class PathHandler extends SubsystemBase {
           }
           break;
         case DRIVE_SHOOT:
-
           if (canShoot) {
             driveSubsystem.holonomicCalculator(curTrajectory.sample(timer.get()), robotHeading);
             if (timer.hasElapsed(curTrajectory.getTotalTimeSeconds())) {
@@ -157,21 +160,21 @@ public class PathHandler extends SubsystemBase {
               curState = PathStates.SHOOT;
             }
           } else {
-          //  startNewPath(paths[0][noteOrder.get(0)]);
-           // curState = PathStates.DRIVE_NOTE;
+            //  startNewPath(paths[0][noteOrder.get(0)]);
+            // curState = PathStates.DRIVE_NOTE;
           }
           break;
         case SHOOT:
           // We can't do any of this yet so I'm not even going to start
           // putting logic in here because I have no idea what to do about it
           if (numPieces > 1) {
-          lastNote = noteOrder.get(0);
-          nextNote = noteOrder.get(1);
-          noteOrder.remove(0);
-          numPieces--;
-          
-          startNewPath(paths[0][nextNote]);
-          curState = PathStates.DRIVE_NOTE;
+            lastNote = noteOrder.get(0);
+            nextNote = noteOrder.get(1);
+            noteOrder.remove(0);
+            numPieces--;
+
+            startNewPath(paths[0][nextNote]);
+            curState = PathStates.DRIVE_NOTE;
           } else {
             curState = PathStates.DONE;
           }

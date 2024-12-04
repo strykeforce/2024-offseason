@@ -31,6 +31,7 @@ public class startPathHandler extends Command {
     pathHandler.setNumber(numPieces);
     pathHandler.startHandler();
   }
+
   @Override
   public boolean isFinished() {
     return pathHandler.getHandlerState() == PathStates.DONE;

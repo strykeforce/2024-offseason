@@ -47,13 +47,12 @@ public class RobotContainer {
     driveSubsystem = new DriveSubsystem(swerve);
     exiter = new ExiterSubsystem(new ExiterIOFX());
     intake = new Intake(new IntakeIOFX());
-    pathHandler = new PathHandler(driveSubsystem);
+    pathHandler = new PathHandler(driveSubsystem, intake);
 
     xboxController = new XboxController(1);
     configureTelemetry();
     configureDriverBindings();
     configureOperatorBindings();
-    configureTelemtry();
   }
 
   private void configureTelemetry() {
@@ -62,8 +61,8 @@ public class RobotContainer {
     driveSubsystem.registerWith(telemetryService);
     telemetryService.start();
   }
-
   private void configureDriverBindings() {
+    System.out.println("Git this is not up to date");
     driveSubsystem.setDefaultCommand(
         new driveTeleop(
             () -> flyskyJoystick.getFwd(),
@@ -73,7 +72,14 @@ public class RobotContainer {
     new JoystickButton(driveJoystick, Button.M_SWC.id).onTrue(new resetGyro(driveSubsystem));
     new JoystickButton(driveJoystick, Button.M_SWE.id).onTrue(new rotatingRobot(driveSubsystem));
     new JoystickButton(driveJoystick, Button.SWD.id)
-        .onTrue(new drivePathHandler(driveSubsystem, pathHandler, "standardAutonStart", List.of(1, 2, 3,2,1,3,2), 3));
+        .onTrue(
+            new drivePathHandler(
+                driveSubsystem,
+                pathHandler,
+                intake,
+                "standardAutonStart",
+                List.of(1, 2, 3, 2, 1, 2,3,2,1,2,3,2,1,2,3),
+                6));
   }
 
   private void configureOperatorBindings() {
